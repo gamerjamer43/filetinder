@@ -1,0 +1,24 @@
+{
+    "profiles" : [
+        {
+            "id": 1,
+            "name": "test 1",
+            "description": "the first test file",
+            "image": "/static/thoinking.png"
+        },
+        
+        {
+            "id": 2,
+            "name": "test 2",
+            "description": "the second test file",
+            "image": "/static/thoinking.png"
+        },
+
+        {
+            "id": 3,
+            "name": "test 3",
+            "description": "the third test file",
+            "image": "/static/thoinking.png"
+        }
+    ]
+}

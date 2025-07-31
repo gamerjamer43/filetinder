@@ -1,0 +1,217 @@
+/* reset and base styles */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+/* layout */
+html, body {
+  overflow: hidden;
+  margin: 0;
+  height: 100%;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+
+/* card stack and styling */
+#card-container {
+  position: relative;
+  width: 340px;
+  height: 520px;
+  perspective: 1000px;
+}
+
+.card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background-color: #2a2a40;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 50%,
+    rgba(0,0,0,0.8)
+  );
+  pointer-events: none;
+}
+
+.card::after {
+  display: none; /* remove the after pseudo-element since we combined gradients */
+}
+
+/* stack positioning (shows only 3 cards at once) */
+.card:nth-child(2) {
+  transform: translateY(-20px) scale(0.95);
+  filter: brightness(0.8);
+  z-index: -1;
+}
+
+.card:nth-child(3) {
+  transform: translateY(-40px) scale(0.9);
+  filter: brightness(0.6);
+  z-index: -2;
+}
+
+/* card info */
+.card-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 24px;
+  color: #fff;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.card-info h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-info p {
+  font-size: 0.9em;
+  opacity: 0.9;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+
+/* labels */
+.label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 8rem;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 4; /* move labels to top */
+  filter: drop-shadow(0 0 20px rgba(0,0,0,0.5));
+}
+
+.label.check {
+  color: #4eff91;
+}
+
+.label.dislike {
+  color: #ff4e4e;
+}
+
+.card.like {
+  border-color: #4eff91;
+  box-shadow: 0 16px 32px rgba(78, 255, 145, 0.3),
+              0 0 60px rgba(78, 255, 145, 0.2);
+}
+
+.card.dislike {
+  border-color: #ff4e4e;
+  box-shadow: 0 16px 32px rgba(255, 78, 78, 0.3),
+              0 0 60px rgba(255, 78, 78, 0.2);
+}
+
+.card.like .label.check,
+.card.dislike .label.dislike {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  animation: pulse 0.4s ease-out;
+}
+
+
+/* buttons just in case we need a fallback */
+.controls {
+  position: absolute;
+  bottom: -80px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.button {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.button:active { transform: scale(0.9); }
+
+
+/* animations */
+.card.hold {
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* hold effect */
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(0.5); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes swipeRight {
+  from {
+    transform: var(--current-transform);
+  }
+  to {
+    transform: translateX(1500px) rotate(45deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeLeft {
+  from {
+    transform: var(--current-transform);
+  }
+  to {
+    transform: translateX(-1500px) rotate(-45deg) scale(0.8);
+    opacity: 0;
+  }
+}
+
+.swipe-right {
+  animation: swipeRight 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+  pointer-events: none;
+}
+
+.swipe-left {
+  animation: swipeLeft 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards !important;
+  pointer-events: none;
+}
+
+.swipe-left ~ .card,
+.swipe-right ~ .card {
+  transform: none !important; /* remove any transform from stacked cards when animating */
+  transition: transform 0.3s ease-out;
+}
