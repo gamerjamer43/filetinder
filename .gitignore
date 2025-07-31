@@ -1,1 +1,5 @@
+# hide away the image folder
 static/images/
+
+# also i always forget to hide pycache
+__pycache__/
